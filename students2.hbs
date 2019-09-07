@@ -205,13 +205,10 @@ section{
 <div class="d-flex  flex-row justify-content-center">
    
 
+   
    <div class="p-5">
-      <a id="a2" class="btn btn-info" href="/redit" role='button'>Show certificate no.</a>
-      <span class="d-block text-center p-2"> Step 2</span>
-   </div>
-   <div class="p-5">
-      <a class="btn btn-warning" href="/generate-certificate" role='button'>Generate certificates</a>
-      <span class="d-block text-center p-2"> Step 3</span>  
+      <button class="btn btn-warning" id="generate-certificate">Generate certificates</a>
+      
    </div>
    
  </div>
@@ -264,7 +261,7 @@ section{
             html = html + "<tr class='rere'><td>"+certificates[i].name+"<td/><td>"+certificates[i].course+"</td><td class='certificate-id'>"+certificates[i].id+"</td><td><a data-toggle='modal' class='edit-button' data-target='#exampleModalCenter' href=''>EDIT</a></td></tr>";
 
         }
-        console.log(html);
+        
         $('#student-table-body').html(html);
 
 
@@ -281,11 +278,41 @@ section{
             })
         });
 
-      //  $('#edit-button').on('click',function(){
-            //var parent_row_element = $(this).parent();
-            //var name = parent_row_element.first().text();
-            //console.log(name);
-        //});
+        $('#generate-certificate').on('click',async function(){
+    var certificates = localStorage.getItem("certificates_details");
+    var certificates = JSON.parse(certificates);
+  for(var i=0; i<certificates.length; i++){
+
+
+        if(certificates[i].course=='GST' || certificates[i].course=='CDCW' || certificates[i].course=='CBAP' || certificates[i].course=='CSBB' || certificates[i].course=='CSGB'){
+        
+         $.ajax({
+          url: '/generate-certificate',
+          type: 'POST',
+          data: certificates[i],
+          beforeSend: function(){
+            console.log(i+1);
+          
+          },
+          success: function(response){
+            var current = i;
+            var status = 'Generated : ' + current + ' of ' + certificates.length;
+            $('#status').html(status);
+            console.log(response);
+          }
+        });
+        
+        
+
+        
+      }else{
+        console.log("Course type not supported!!");
+      }
+    }
+    
+})
+
+      
 
 
 
